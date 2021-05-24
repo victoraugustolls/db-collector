@@ -1,3 +1,3 @@
-from collector.postgresql.collector import Collector
+from .colletor import Collector
 
 __all__ = ("Collector",)

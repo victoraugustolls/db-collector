@@ -2,7 +2,7 @@ from datetime import datetime
 
 import asyncpg
 
-from collector.colletor import Collector
+from collector import Collector
 from domain import entities
 from repository.in_memory import InMemoryRepo
 

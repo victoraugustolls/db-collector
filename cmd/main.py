@@ -3,7 +3,8 @@ import asyncio
 import asyncpg
 import uvloop
 
-from collector.postgresql.collector import Collector
+from collector import Collector
+from collector.postgresql import PostgreSQLCollector
 from repository.in_memory import InMemoryRepo
 
 
@@ -14,7 +15,7 @@ async def main():
         max_size=5,
     )
     repo = InMemoryRepo()
-    collector = Collector(conn=pool, repo=repo)
+    collector: Collector = PostgreSQLCollector(conn=pool, repo=repo)
     count: int = 0
     while count <= 3:
         await collector.query_statements()
