@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "db-collector"
+version = "0.1.0"
+description = ""
+authors = ["Victor Lima <victoraugustolls@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+asyncpg = "^0.23.0"
+schedule = "^1.1.0"
+uvloop = "^0.15.2"
+
+[tool.poetry.dev-dependencies]
+black = "^21.5b1"
+flake8 = "^3.9.2"
+mypy = "^0.812"
+pydantic = "^1.8.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
