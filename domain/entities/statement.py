@@ -5,8 +5,9 @@ from domain.entities.statement_stats import StatementStats
 
 @dataclasses.dataclass
 class Statement:
-    query_id: int
+    query_id: str
     query: str
+    normalized_query: str
     calls: int
     total_exec_time: float
     mean_exec_time: float

@@ -1,29 +1,58 @@
 import asyncio
+from datetime import datetime
 
-import asyncpg
 import uvloop
 
-from collector import Collector
-from collector.postgresql import PostgreSQLCollector
-from repository.in_memory import InMemoryRepo
+from collector import Collector, MySQLCollector, PostgreSQLCollector
+from config import settings
+from repository import InMemoryRepo, Repository, SQLiteRepo
+from types import DSN
 
 
 async def main():
-    pool: asyncpg.Pool = await asyncpg.create_pool(
-        dsn="postgresql://postgres:postgres@127.0.0.1:5432/dev",
-        min_size=2,
-        max_size=5,
-    )
-    repo = InMemoryRepo()
-    collector: Collector = PostgreSQLCollector(conn=pool, repo=repo)
+    repository = await new_repository(settings.repository.type)
+    collector = await new_collector(config=settings.collector, repository=repository)
+
     count: int = 0
-    while count <= 3:
-        await collector.query_statements()
-        await asyncio.sleep(5)
+
+    await collector.start()
+    while count <= settings.loop.cycles:
+        await collector.take_snapshot()
+        await asyncio.sleep(settings.loop.sleep)
         count += 1
 
-    repo.debug()
+    await collector.end()
+    await repository.debug()
+
+    return
 
 
-uvloop.install()
-asyncio.run(main())
+async def new_repository(value: str) -> Repository:
+    if value == "sqlite":
+        return await SQLiteRepo.create(database=f"../collector/collector_{str(datetime.utcnow())}.db")
+    elif value == "in_memory":
+        return await InMemoryRepo.create()
+    else:
+        raise Exception("invalid repository type")
+
+
+async def new_collector(config, repository: Repository) -> Collector:
+    dsn = DSN(
+        user=config.user,
+        password=config.password,
+        host=config.host,
+        port=config.port,
+        database=config.database,
+    )
+
+    if config.rdbms == "postgres":
+        return await PostgreSQLCollector.create(repository=repository, dsn=dsn)
+    elif config.rdbms == "mysql":
+        return await MySQLCollector.create(repository=repository, dsn=dsn)
+    else:
+        raise Exception("invalid collector rdbms")
+
+
+if __name__ == "__main__":
+    uvloop.install()
+    asyncio.run(main())

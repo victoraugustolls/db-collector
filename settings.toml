@@ -1,0 +1,23 @@
+[collector]
+rdbms = "postgres"
+user = "postgres"
+password = "postgres"
+host = "127.0.0.1"
+port = 5432
+database = "dev"
+
+#[collector]
+#rdbms = "mysql"
+#user = "root"
+#password = "mysql"
+#host = "127.0.0.1"
+#port = 3306
+#database = "dev"
+
+[loop]
+cycles = 15
+sleep = 1
+
+[repository]
+type = "sqlite"
+type = "in_memory"

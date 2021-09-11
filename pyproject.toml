@@ -9,6 +9,11 @@ python = "^3.9"
 asyncpg = "^0.23.0"
 schedule = "^1.1.0"
 uvloop = "^0.15.2"
+aiosqlite = "^0.17.0"
+sqlparse = "^0.4.1"
+sql-metadata = "^2.2.2"
+dynaconf = "^3.1.4"
+aiomysql = "^0.0.21"
 
 [tool.poetry.dev-dependencies]
 black = "^21.5b1"
